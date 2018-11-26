@@ -1,0 +1,81 @@
+version 2.x.3.1:
+features
+1.This version combine HF and LF board firmware of RAK811. Through defined macro 'LORA_HF_BOARD' surpport HF,or undefined to surpport LF.
+2.The Release or Debug Mode switch by modifying the macro 'DEBUG_FW' in "rw_sys.h" to be '0' or '1'. 
+
+/********************************************************/
+version 2.x.3.0:
+features
+1. Adapt to Actility test.
+2. Fix the problem that the device can't send commands after sending at+sleep	
+3. Integrate all bands and use the at+band command to switch regional bands.
+4.The meaning of x in version number:0 support regions:EU868, US915, AU915, KR920, AS923，IN865.
+                                     1 support regions:EU433，CN470.
+
+/********************************************************/
+version 2.0.2.2:
+features
+1. update LoraWAN 1.0.1 to LoraWAN 1.0.2, support regions: 
+   EU868, US915, AU915, KR920, AS923, IN865
+2. Add Peripheral command
+    at+rd_reg=<reg_addr>[,<len>]
+	at+wr_reg=<reg_addr>,<len>,<databuf>
+    at+gpio=<pin>[,<level>]
+	at+rd_adc=<pin>
+	at+rd_iic=<dev_addr>,<data_addr>[,<len>]
+	at+wr_iic=<dev_addr>,<data_addr>,<databuf>	
+3. add config class to select loraWAN class A C 
+4. add at+recv_ex command to enable rssi snr with recv
+5. add at+link_cnt to get up/downlink counter
+6. add at+abp_info to get abp info after join OTAA successfully
+7. add at+set_config parameters.
+ 
+bugs
+1. fix P2P frequence 868-929.9 MHz
+2. fix at+recv data bug 
+
+/********************************************************/
+version 1.0.2.6:
+features
+1. add at+band command to get the loraWAN region info.
+2. open EU868 channel 0-2 to customer redefined.
+3. change EU868 duty cycle config to disenable.
+4. add at+dr command to change the send datarate temporary.
+
+bugs
+1. fix at+set_config=rx2:datarate,frequency
+2. fix at+uart return info
+3. fix at+set_config=dr:datarate use to change the default datarate
+
+/********************************************************/
+version 1.0.2.3:
+features
+1. sleep power consumption fix to 7.2uA
+
+bugs
+
+/********************************************************/
+version 1.0.2.2:
+features
+
+bugs
+1. fix at+txc cnts change limits 100 to 65535
+2. fix bug data flash abnormal to factory config
+
+/********************************************************/
+version 1.0.1.4:
+features
+
+bugs
+1. fix rx_delay1 setting
+2. fix join abp way to load new config
+
+/********************************************************/
+version 1.0.1.2:
+features
+1. add LoraP2P interfaces 
+
+version 1.0.1.0:
+
+1. support LoraWAN V1.0.1 ClassA 
+2. fixed some bugs, release first version

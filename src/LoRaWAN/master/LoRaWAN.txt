@@ -1,0 +1,2 @@
+The master branch implementation is based on LoRaWAN Specification v1.0.2 and LoRaWAN Regional Parameters v1.0.2rB specifications.
+ClassA and ClassC end-device classes are fully implemented.
