@@ -1,7 +1,7 @@
 # RAK811_LoRaNode
 ####update RAK811_LoRaNode firmware version to 2.x.3.2
 1.Fix a debug about "The Hard Fault exception occurs,Reset!".<br>
-2.The end number in version indicate the version with DEBUG or RELEASE :odd:DEBUG ,even:RELEASE.
+2.The end number in version indicate the version with DEBUG or RELEASE :odd:DEBUG ,even:RELEASE.<br><br>
 ####RAK811_LoRaNode firmware version 2.x.3.1
 1.RAK811 is a LoRaNode module  based on STM32L151 and SX1276. It has two kinds of boards : RAK811-HF board and RAK811-LF board.
 
