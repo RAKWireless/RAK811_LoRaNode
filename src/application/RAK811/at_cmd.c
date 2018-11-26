@@ -50,6 +50,8 @@ static void lora_abp_info(int argc, char *argv[]);
 static void lora_sleep(int argc, char *argv[]);
 static void lora_tx_dr(int argc, char *argv[]);
 
+extern char config_buf[];
+
 struct cli_cmd cli_cmds[] = {
                                  "join",           lora_join,
                                  "version",        lora_version,         
@@ -85,9 +87,6 @@ struct cli_cmd cli_cmds[] = {
                                  "link_cnt",        lora_link_cnt,
                                  "abp_info",        lora_abp_info,
                                  };
-
-#define MAX_ARGV        20
-#define CLI_LENGTH_MAX  512
 
 lora_system_t     g_lora_system;
 static char cli_buffer[CLI_LENGTH_MAX];
@@ -137,14 +136,13 @@ static void do_work(char *str)
     int i;
     int argc;
     char* argv[MAX_ARGV]={NULL};
-
+		
     if ((strncmp(str, "at+", 3) != 0) || str[3] == '\0') {
         out_error(RAK_ARG_ERR);
         return;
     }
     DPRINTF("[echo cmd:] %s\r\n", str);
     str += 3;
-
     argc = parse_args(str, argv);
     if (argc > 0) {
         for (i = 0; i < sizeof(cli_cmds)/sizeof(struct cli_cmd); i++) {
@@ -182,8 +180,7 @@ void lora_cli_loop(void)
 {
     int c;
     int process_cli = 0;
-    static int i;
-    
+    static int i;  
     c = e_getchar();
     if (c >= 0) {
         cli_buffer[i] = (char)c;
@@ -239,14 +236,15 @@ static void lora_mode(int argc, char *argv[])
 	   g_lora_config.lora_mode = atoi(argv[1]);
 	   LoRaSetUserMode(g_lora_config.lora_mode);
 	   write_partition(PARTITION_0, (char *)&g_lora_config, sizeof(g_lora_config));
-	   rw_ResetLoRaWAN();
+		 e_printf("Mode switch OK!Reset now...\r\n");
+	   NVIC_SystemReset();//rw_ResetLoRaWAN();
     }
     else {
 	   out_error(RAK_ARG_ERR);
 	   return;
     }
 
-    e_printf("OK\r\n");
+//    e_printf("OK\r\n");
 }
 
 static void lora_rf_config(int argc, char *argv[])
@@ -476,7 +474,8 @@ static void lora_join(int argc, char *argv[])
             check_hex_invaild(g_lora_config.app_eui, sizeof(g_lora_config.app_eui)) != 0 ) {
             out_error(RAK_ARG_ERR);
             return;    
-        }  
+        }   
+//e_printf("g_lora_config.join_cnt£º%d\r\n",g_lora_config.join_cnt);
         ret = rw_JoinNetworkOTAA(g_lora_config.dev_eui, g_lora_config.app_eui, g_lora_config.app_key, g_lora_config.join_cnt);
         if (ret < 0) {
             out_error(RAK_JOIN_OTAA_ERR);
@@ -541,7 +540,7 @@ static void lora_band(int argc, char *argv[])
 #ifdef LORA_HF_BOARD
 					if ((region == LORAMAC_REGION_EU433)||((region == LORAMAC_REGION_CN470)))
 					{
-						e_printf("Error!This Board surport region only such as:\r\n EU868, US915, AU915, KR920, AS923£¬IN865,CN779.\r\n");
+						e_printf("Error!This Board surport region only such as:\r\n EU868, US915, AU915, KR920, AS923£¬IN865.\r\n");
 						return;
 					}	
 #else 					
@@ -556,7 +555,8 @@ static void lora_band(int argc, char *argv[])
           return;
         }
 				e_printf("OK.\r\n");
-        rw_ResetLoRaWAN();
+        NVIC_SystemReset();
+//				rw_ResetLoRaWAN();
         
     }
   
@@ -638,8 +638,10 @@ static void lora_read_config(int argc, char *argv[])
     if (ret < 0) {
         out_error(RAK_ARG_NOT_FIND);
     } else {
-				e_printf("OK\r\n");
-				e_printf("%s=",argv[1]);
+		e_printf("OK\r\n");
+#if DEBUG_FW 		
+		e_printf("%s=",argv[1]);
+#endif				
         e_printf_raw(out, ret);
         e_printf_raw("\r\n", 2);
     }
@@ -1382,6 +1384,16 @@ static void lora_abp_info(int argc, char *argv[])
   
 }
 
+void GPIOIRQ_Enable(void)
+{
+	HAL_NVIC_EnableIRQ( EXTI0_IRQn );
+	HAL_NVIC_EnableIRQ( EXTI1_IRQn );
+	HAL_NVIC_EnableIRQ( EXTI2_IRQn );
+	HAL_NVIC_EnableIRQ( EXTI3_IRQn );
+	HAL_NVIC_EnableIRQ( EXTI4_IRQn );
+	HAL_NVIC_EnableIRQ( EXTI9_5_IRQn );
+	HAL_NVIC_EnableIRQ( EXTI15_10_IRQn );
+}
 static void lora_sleep(int argc, char *argv[])
 {
    
@@ -1408,6 +1420,8 @@ static void lora_sleep(int argc, char *argv[])
         __HAL_RCC_RTC_ENABLE();
 
         SX127X_INIT();
+			
+				GPIOIRQ_Enable();
         
         rw_LoadUsrConfig(); 
         

@@ -1115,6 +1115,7 @@ void rw_LoRaP2PRxStop(void)
   Radio.Sleep();
 }
 
+
 void rw_GetVersion(char *ver)
 {
   uint16_t len = 0;

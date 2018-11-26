@@ -224,7 +224,6 @@ void SX1276Init( RadioEvents_t *events )
     TimerInit( &TxTimeoutTimer, SX1276OnTimeoutIrq );
     TimerInit( &RxTimeoutTimer, SX1276OnTimeoutIrq );
     TimerInit( &RxTimeoutSyncWord, SX1276OnTimeoutIrq );
- 
     SX1276Reset( );
     __disable_irq();
     RxChainCalibration( );
@@ -233,16 +232,15 @@ void SX1276Init( RadioEvents_t *events )
 
     SX1276IoIrqInit( DioIrq );
     
-    __enable_irq();
-    
+		__enable_irq();
+  
     for( i = 0; i < sizeof( RadioRegsInit ) / sizeof( RadioRegisters_t ); i++ )
     {
         SX1276SetModem( RadioRegsInit[i].Modem );
         SX1276Write( RadioRegsInit[i].Addr, RadioRegsInit[i].Value );
     }
-
     SX1276SetModem( MODEM_FSK );
-
+ 
     SX1276.Settings.State = RF_IDLE;
 }
 
@@ -1214,8 +1212,7 @@ void SX1276SetModem( RadioModems_t modem )
     else
     {
         SX1276.Settings.Modem = MODEM_FSK;
-    }
-
+    }	
     if( SX1276.Settings.Modem == modem )
     {
         return;
@@ -1231,6 +1228,7 @@ void SX1276SetModem( RadioModems_t modem )
 
         SX1276Write( REG_DIOMAPPING1, 0x00 );
         SX1276Write( REG_DIOMAPPING2, 0x30 ); // DIO5=ModeReady
+
         break;
     case MODEM_LORA:
         SX1276SetSleep( );

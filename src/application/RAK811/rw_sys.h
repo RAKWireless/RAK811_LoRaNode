@@ -1,7 +1,11 @@
 #ifndef  _BOARD_CONFIG_H_
 #define  _BOARD_CONFIG_H_
 
-#define DEBUG_FW           0
+#define DEBUG_FW       0
+
+#define MAX_ARGV        20
+#define CLI_LENGTH_MAX  512
+#define CONFIGBUF_SIZE  2048
 
 #ifdef LORA_HF_BOARD
 	#define P2P_FREQ_MIN                  860000000 
@@ -76,7 +80,7 @@
 	#define P2P_FREQ_MIN                  433000000
 	#define P2P_FREQ_MAX                  510000000
 
-	#define LORAMAC_REGION_DEFAULT      LORAMAC_REGION_EU433
+	#define LORAMAC_REGION_DEFAULT      LORAMAC_REGION_CN470
 
 	#ifdef __cplusplus
 	 extern "C" {

@@ -52,7 +52,10 @@ void HAL_TIM_OnePulse_MspInit(TIM_HandleTypeDef *htim)
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
+#if DEBUG_FW 
     e_printf("haha\r\n");
+#endif
+
     TimerIdleSleep = true;
 
 }

@@ -23,6 +23,7 @@ Maintainer: Miguel Luis ( Semtech ), Gregory Cristian ( Semtech ) and Daniel Jae
 #include "region/Region.h"
 #include "LoRaMacCrypto.h"
 #include "LoRaMacTest.h"
+#include "rw_sys.h"
 
 
 
@@ -624,7 +625,9 @@ static void OnRadioTxDone( void )
     TimerTime_t curTime = TimerGetCurrentTime( );
 
     g_radioStatus.TxSuccessCnt++;
-    
+#if DEBUG_FW 
+	e_printf("TxSuccessCnt:%d\r\n",g_radioStatus.TxSuccessCnt);
+#endif	
     if (g_lora_mode == LORAP2P_MODE){
       
       if( ( LoRaMacCallbacks != NULL ) && ( LoRaMacCallbacks->P2PTxDone != NULL ) )
@@ -736,14 +739,19 @@ static void OnRadioRxDone( uint8_t *payload, uint16_t size, int16_t rssi, int8_t
     uint32_t micRx = 0;
     
     DPRINTF("RxDone ==> size=%d, rssi=%d, snr=%d\r\n ", size, rssi, snr);
-#if 0
+#if DEBUG_FW
     char hex_str[3]={0};
+    e_printf("size:%d\r\n",size);
     if(size){
        DPRINTF("payload:");
-       for (int i = 0; i < size; i++) {
+       for (int i = 5; i < size; i++) {
             sprintf(hex_str, "%x", payload[i]);
-            e_printf("%s", hex_str); 
+            if(i == 5){e_printf("Fctrl=%s\r\n", hex_str);sprintf(hex_str, "%x", payload[0]);e_printf("MHDR=%s\r\n", hex_str);}
+            else if((i==6)||(i==7))e_printf("%s", hex_str);            
+            else e_printf("%s", hex_str);
+            if(i==7)e_printf("\r\n");
         }
+       e_printf("\r\n");
     }
     DPRINTF("\r\n");
 #endif
@@ -913,7 +921,6 @@ static void OnRadioRxDone( uint8_t *payload, uint16_t size, int16_t rssi, int8_t
                 }
 
                 fCtrl.Value = payload[pktHeaderLen++];
-
                 sequenceCounter = ( uint16_t )payload[pktHeaderLen++];
                 sequenceCounter |= ( uint16_t )payload[pktHeaderLen++] << 8;
 
@@ -926,12 +933,15 @@ static void OnRadioRxDone( uint8_t *payload, uint16_t size, int16_t rssi, int8_t
 
                 sequenceCounterPrev = ( uint16_t )downLinkCounter;
                 sequenceCounterDiff = ( sequenceCounter - sequenceCounterPrev );
-
+#if DEBUG_FW 
+	e_printf("sequenceCounterDiff = %d,downLinkCounter=%d\r\n",sequenceCounterDiff,downLinkCounter);
+#endif
                 if( sequenceCounterDiff < ( 1 << 15 ) )
                 {
                     downLinkCounter += sequenceCounterDiff;
                     LoRaMacComputeMic( payload, size - LORAMAC_MFR_LEN, nwkSKey, address, DOWN_LINK, downLinkCounter, &mic );
-                    if( micRx == mic )
+                    
+				if( micRx == mic )
                     {
                         isMicOk = true;
                     }
@@ -1100,9 +1110,12 @@ static void OnRadioRxDone( uint8_t *payload, uint16_t size, int16_t rssi, int8_t
                             ProcessMacCommands( payload, 8, appPayloadStartIndex, snr );
                         }
                     }
-
+#if DEBUG_FW 
+	e_printf("skipIndication = %d\r\n",skipIndication);
+#endif
                     if( skipIndication == false )
                     {
+
                         // Check if the frame is an acknowledgement
                         if( fCtrl.Bits.Ack == 1 )
                         {
@@ -1399,6 +1412,11 @@ static void OnMacStateCheckTimerEvent( void )
                 if( ScheduleTx( ) == LORAMAC_STATUS_OK )
                 {
                     LoRaMacFlags.Bits.MacDone = 0;
+
+#if DEBUG_FW 
+	e_printf("Retry!\r\n");
+#endif
+					
                 }
                 else
                 {
@@ -1505,7 +1523,12 @@ static void OnTxDelayedTimerEvent( void )
          * LoRaMacDevNonce values to prevent reply attacks. */
         PrepareFrame( &macHdr, &fCtrl, 0, NULL, 0 );
     }
-
+#if DEBUG_FW 
+		
+	e_printf("Retry0£º%d\r\n",JoinRequestTrials);
+		
+#endif
+		
     ScheduleTx( );
 }
 
@@ -2493,7 +2516,7 @@ LoRaMacStatus_t LoRaMacInitialization( LoRaMacPrimitives_t *primitives, LoRaMacC
     {
         return LORAMAC_STATUS_REGION_NOT_SUPPORTED;
     }
-    e_printf("\r\nSelected LoraWAN 1.0.2 Region: %s     \r\n", rw_Region2Str(region));
+    e_printf("Selected LoraWAN 1.0.2 Region: %s\r\n", rw_Region2Str(region));
     
     LoRaMacPrimitives = primitives;
     LoRaMacCallbacks = callbacks;
@@ -2501,7 +2524,7 @@ LoRaMacStatus_t LoRaMacInitialization( LoRaMacPrimitives_t *primitives, LoRaMacC
 
     LoRaMacFlags.Value = 0;
 
-    LoRaMacDeviceClass = CLASS_A;
+    LoRaMacDeviceClass = g_lora_config.loraWan_class;//CLASS_A;
     LoRaMacState = LORAMAC_IDLE;
 
     JoinRequestTrials = 0;
@@ -2588,12 +2611,8 @@ LoRaMacStatus_t LoRaMacInitialization( LoRaMacPrimitives_t *primitives, LoRaMacC
     LoRaMacParams.JoinAcceptDelay1 = LoRaMacParamsDefaults.JoinAcceptDelay1;
     LoRaMacParams.JoinAcceptDelay2 = LoRaMacParamsDefaults.JoinAcceptDelay2;
     LoRaMacParams.ChannelsNbRep = LoRaMacParamsDefaults.ChannelsNbRep;
-#ifndef LORA_HF_BOARD
-e_printf(" ");
-#endif
-    ResetMacParameters( );
-e_printf(" \r\n");
 
+    ResetMacParameters( );
     // Initialize timers
     TimerInit( &MacStateCheckTimer, OnMacStateCheckTimerEvent );
     TimerSetValue( &MacStateCheckTimer, MAC_STATE_CHECK_TIMEOUT );
@@ -2602,10 +2621,8 @@ e_printf(" \r\n");
     TimerInit( &RxWindowTimer1, OnRxWindow1TimerEvent );
     TimerInit( &RxWindowTimer2, OnRxWindow2TimerEvent );
     TimerInit( &AckTimeoutTimer, OnAckTimeoutTimerEvent );
-
     // Store the current initialization time
     LoRaMacInitializationTime = TimerGetCurrentTime( );
-
     // Initialize Radio driver
     RadioEvents.TxDone = OnRadioTxDone;
     RadioEvents.RxDone = OnRadioRxDone;
@@ -2619,7 +2636,6 @@ e_printf(" \r\n");
     PublicNetwork = true;
     Radio.SetPublicNetwork( PublicNetwork );
     Radio.Sleep( );
-
     return LORAMAC_STATUS_OK;
 }
 

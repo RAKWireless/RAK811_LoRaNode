@@ -178,14 +178,17 @@ static RtcCalendar_t RtcComputeTimerTimeToAlarmTick( TimerTime_t timeCounter, Rt
  *
  * \retval calendar RTC calendar
  */
-static RtcCalendar_t RtcGetCalendar( void );
-
+static RtcCalendar_t RtcGetCalendar( void );		
 /*!
  * \brief Check the status for the calendar year to increase the value of Century at the overflow of the RTC
  *
  * \param[IN] year Calendar current year
  */
 static void RtcCheckCalendarRollOver( uint8_t year );
+
+//RtcCalendar_t now;
+//RtcCalendar_t alarmTimer;
+//RTC_AlarmTypeDef alarmStructure;
 
 void RtcInit( void )
 {
@@ -385,9 +388,9 @@ void RtcComputeWakeUpTime( void )
 
 static void RtcStartWakeUpAlarm( uint32_t timeoutValue )
 {
-    RtcCalendar_t now;
-    RtcCalendar_t alarmTimer;
-    RTC_AlarmTypeDef alarmStructure;
+static   RtcCalendar_t now;
+static   RtcCalendar_t alarmTimer;
+static   RTC_AlarmTypeDef alarmStructure;
 
     HAL_RTC_DeactivateAlarm( &RtcHandle, RTC_ALARM_A );
     HAL_RTCEx_DeactivateWakeUpTimer( &RtcHandle );

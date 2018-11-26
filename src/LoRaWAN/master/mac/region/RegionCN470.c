@@ -479,7 +479,8 @@ bool RegionCN470RxConfig( RxConfigParams_t* rxConfig, int8_t* datarate )
     if( rxConfig->Window == 0 )
     {
         // Apply window 1 frequency
-        frequency = CN470_FIRST_RX1_CHANNEL + ( rxConfig->Channel % 48 ) * CN470_STEPWIDTH_RX1_CHANNEL;
+        frequency = CN470_FIRST_RX1_CHANNEL + ( rxConfig->Channel % 8 ) * CN470_STEPWIDTH_RX1_CHANNEL;
+        // add chace, modify the %48 to %8.
     }
 
     // Read the physical datarate from the datarates table

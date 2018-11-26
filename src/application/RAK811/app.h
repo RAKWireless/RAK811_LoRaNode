@@ -17,7 +17,7 @@
   #define CUSTOM_VER         1           //LF
 #endif
 #define FUN_VER            3
-#define BUG_VER            1
+#define BUG_VER            2         //odd:DEBUG   even:RELEASE
 #define TEST_VER           1  // 1 test uplink downlink
                               // 2 actility cert test
                               // 3 HSI cabrit

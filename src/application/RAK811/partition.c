@@ -35,6 +35,15 @@ static const struct partition_map_ partition_map[] = {
      256,  FLASH_BASE_ADDR+512+2048+2048+256+256, //
 };
 
+//static const struct partition_map_ partition_map[] = {
+//     32,   FLASH_BASE_ADDR, //PARTITION_0,
+//     2048,  FLASH_BASE_ADDR+32, //TABLE_0_0,
+//     2048,  FLASH_BASE_ADDR+32+2048, //TABLE_0_1,
+//     32,   FLASH_BASE_ADDR+32+2048+2048, //PARTITION_1,
+//     32,  FLASH_BASE_ADDR+32+2048+2048+32, //TABLE_1_0,
+//     32,  FLASH_BASE_ADDR+32+2048+2048+32+32, //
+//};
+
 static void _ENABLE_FLASH(void)
 {
     HAL_FLASH_Unlock(); 

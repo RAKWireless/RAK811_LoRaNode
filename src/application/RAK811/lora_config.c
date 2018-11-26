@@ -3,6 +3,7 @@
 #include <string.h>
 #include "board.h"
 #include "app.h"
+#include "rw_sys.h"
 
 #define MAX_ARGV        6
 
@@ -71,7 +72,7 @@ struct config_cmd config_cmds[] = {
                                        //"cnt_down",              handle_down_cnt,
                                   };
 
-char config_buf[1024];
+char config_buf[CONFIGBUF_SIZE];
 
 static int parse_args(char* str, char* argv[], char **end)
 {
@@ -189,8 +190,7 @@ static int write_config_string(lora_config_t *config, char *in)
 int write_config(char *in)
 {
     int ret;
-    lora_config_t config;
-    
+lora_config_t config; 
     ret = read_partition(PARTITION_0, (char *)&config, sizeof(config));
     if (ret < 0) {
         return ret;
@@ -207,14 +207,14 @@ int write_config(char *in)
 int read_config(const char *in, char **out)
 {
     int ret;
-    lora_config_t config;
-    
+ lora_config_t config;    
     ret = read_partition(PARTITION_0, (char *)&config, sizeof(config));
     if (ret < 0) {
         return ret;
     }
     
     ret = read_config_string(&config, in, config_buf);
+
     if (ret < 0) {
         return ret;
     }
@@ -1219,11 +1219,13 @@ static int handle_lorawan_class(lora_config_t *config, int argc, char *argv[], c
         if (argc != 1) {
             goto END;
         }        
-        e_printf("%s\r\n",argv[0]);
         config->loraWan_class = atoi(argv[0]);
-				e_printf("%d\r\n",config->loraWan_class);
         if (config->loraWan_class <= CLASS_C) {
-           ret = RAK_OK;
+					g_lora_config.loraWan_class = config->loraWan_class;
+					write_partition(PARTITION_0, (char *)&g_lora_config, sizeof(g_lora_config));
+					e_printf("Class switch OK.Reset now.\r\n");
+					NVIC_SystemReset();
+					ret = RAK_OK;
         }
     }
 END:

@@ -1,3 +1,12 @@
+﻿/********************************************************/
+version 2.x.3.2:
+features
+This version is based on 2.x.3.1.
+1.Fix a debug about "The Hard Fault exception occurs,Reset!".
+2.The end number in version indicate the version with DEBUG or RELEASE :odd:DEBUG ,even:RELEASE.
+
+
+/********************************************************/
 version 2.x.3.1:
 features
 1.This version combine HF and LF board firmware of RAK811. Through defined macro 'LORA_HF_BOARD' surpport HF,or undefined to surpport LF.
@@ -9,7 +18,7 @@ features
 1. Adapt to Actility test.
 2. Fix the problem that the device can't send commands after sending at+sleep	
 3. Integrate all bands and use the at+band command to switch regional bands.
-4.The meaning of x in version number:0 support regions:EU868, US915, AU915, KR920, AS923，IN865.
+4.The meaning of x in version number:0 support regions:EU868, US915, AU915, KR920, AS923，IN865,CN779.
                                      1 support regions:EU433，CN470.
 
 /********************************************************/

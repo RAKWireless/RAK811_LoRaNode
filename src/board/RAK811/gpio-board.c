@@ -189,7 +189,7 @@ void GpioMcuSetInterrupt( Gpio_t *obj, IrqModes irqMode, IrqPriorities irqPriori
     GpioIrq[(obj->pin ) & 0x0F] = irqHandler;
 
     HAL_NVIC_SetPriority( IRQnb , priority, 0 );
-    HAL_NVIC_EnableIRQ( IRQnb );
+//    HAL_NVIC_EnableIRQ( IRQnb );
 }
 
 void GpioMcuRemoveInterrupt( Gpio_t *obj )
