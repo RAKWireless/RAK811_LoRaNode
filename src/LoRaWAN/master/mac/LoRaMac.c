@@ -1523,10 +1523,9 @@ static void OnTxDelayedTimerEvent( void )
          * LoRaMacDevNonce values to prevent reply attacks. */
         PrepareFrame( &macHdr, &fCtrl, 0, NULL, 0 );
     }
-#if DEBUG_FW 
-		
-	e_printf("Retry0£º%d\r\n",JoinRequestTrials);
-		
+	
+#if DEBUG_FW 		
+	e_printf("Retry£º%d\r\n",JoinRequestTrials);		
 #endif
 		
     ScheduleTx( );
@@ -2062,11 +2061,18 @@ static LoRaMacStatus_t ScheduleTx( void )
         RxWindow2Delay = LoRaMacParams.ReceiveDelay2 + RxWindow2Config.WindowOffset;
     }
 
+	
+if((JoinRequestTrials==32)&&(LoRaMacRegion==LORAMAC_REGION_CN470))dutyCycleTimeOff=0;
+#if DEBUG_FW 		
+	e_printf("Channel=%d,dutyCycleTimeOff=%d.\r\n",Channel,dutyCycleTimeOff);	
+	e_printf("Datarate=%d.\r\n",LoRaMacParams.ChannelsDatarate);	
+#endif
+	
     // Schedule transmission of frame
     if( dutyCycleTimeOff == 0 )
     {
         // Try to send now
-        return SendFrameOnChannel( Channel );
+        return SendFrameOnChannel( Channel );		
     }
     else
     {
@@ -3359,7 +3365,8 @@ LoRaMacStatus_t LoRaMacMlmeRequest( MlmeReq_t *mlmeRequest )
             MaxJoinRequestTrials = mlmeRequest->Req.Join.NbTrials;
 
             // Reset variable JoinRequestTrials
-            JoinRequestTrials = 0;
+			if (LoRaMacRegion==LORAMAC_REGION_CN470) JoinRequestTrials = 31;
+			else JoinRequestTrials=0;
 
             // Setup header information
             macHdr.Value = 0;

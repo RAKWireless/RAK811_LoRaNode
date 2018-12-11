@@ -1,7 +1,7 @@
 #ifndef  _BOARD_CONFIG_H_
 #define  _BOARD_CONFIG_H_
 
-#define DEBUG_FW       0
+#define DEBUG_FW      0
 
 #define MAX_ARGV        20
 #define CLI_LENGTH_MAX  512

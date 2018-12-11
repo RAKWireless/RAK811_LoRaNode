@@ -267,7 +267,7 @@ PhyParam_t RegionCN470GetPhyParam( GetPhyParams_t* getPhy )
         case PHY_NB_JOIN_TRIALS:
         case PHY_DEF_NB_JOIN_TRIALS:
         {
-            phyParam.Value = 48;
+             phyParam.Value = 40;//phyParam.Value = 48;
             break;
         }
         default:
@@ -300,12 +300,19 @@ void RegionCN470InitDefaults( InitType_t type )
             }
 
             // Initialize the channels default mask
-            ChannelsDefaultMask[0] = 0xFFFF;
-            ChannelsDefaultMask[1] = 0xFFFF;
-            ChannelsDefaultMask[2] = 0xFFFF;
-            ChannelsDefaultMask[3] = 0xFFFF;
-            ChannelsDefaultMask[4] = 0xFFFF;
-            ChannelsDefaultMask[5] = 0xFFFF;
+//            ChannelsDefaultMask[0] = 0xFFFF;
+//            ChannelsDefaultMask[1] = 0xFFFF;
+//            ChannelsDefaultMask[2] = 0xFFFF;
+//            ChannelsDefaultMask[3] = 0xFFFF;
+//            ChannelsDefaultMask[4] = 0xFFFF;
+//            ChannelsDefaultMask[5] = 0xFFFF;
+			
+			ChannelsDefaultMask[0] = 0xFF00;
+            ChannelsDefaultMask[1] = 0x0;
+            ChannelsDefaultMask[2] = 0;
+            ChannelsDefaultMask[3] = 0;
+            ChannelsDefaultMask[4] = 0;
+            ChannelsDefaultMask[5] = 0;
 
             // Update the channels mask
             RegionCommonChanMaskCopy( ChannelsMask, ChannelsDefaultMask, 6 );
@@ -725,12 +732,12 @@ bool RegionCN470NextChannel( NextChanParams_t* nextChanParams, uint8_t* channel,
     // Count 125kHz channels
     if( RegionCommonCountChannels( ChannelsMask, 0, 6 ) == 0 )
     { // Reactivate default channels
-        ChannelsMask[0] = 0xFFFF;
-        ChannelsMask[1] = 0xFFFF;
-        ChannelsMask[2] = 0xFFFF;
-        ChannelsMask[3] = 0xFFFF;
-        ChannelsMask[4] = 0xFFFF;
-        ChannelsMask[5] = 0xFFFF;
+        ChannelsMask[0] = 0xFF00;
+        ChannelsMask[1] = 0;
+        ChannelsMask[2] = 0;
+        ChannelsMask[3] = 0;
+        ChannelsMask[4] = 0;
+        ChannelsMask[5] = 0;
     }
 
     if( nextChanParams->AggrTimeOff <= TimerGetElapsedTime( nextChanParams->LastAggrTx ) )

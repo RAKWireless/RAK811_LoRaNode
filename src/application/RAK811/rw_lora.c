@@ -424,13 +424,14 @@ static void McpsIndication( McpsIndication_t *McpsIndication )
   }
   
   if( McpsIndication->RxData == true ) {
-    if (McpsIndication->Port == 224) {
-      lora_recv_ex(LORA_EVENT_RECV_DATA, McpsIndication->Port, McpsIndication->Rssi, McpsIndication->Snr, McpsIndication->BufferSize, McpsIndication->Buffer);
-    } else {
-      if(McpsIndication->BufferSize) {
-        lora_recv_ex(LORA_EVENT_RECV_DATA, McpsIndication->Port, McpsIndication->Rssi, McpsIndication->Snr, McpsIndication->BufferSize, McpsIndication->Buffer);
-      }   
-    }
+		lora_recv_ex(LORA_EVENT_RECV_DATA, McpsIndication->Port, McpsIndication->Rssi, McpsIndication->Snr, McpsIndication->BufferSize, McpsIndication->Buffer);
+//    if (McpsIndication->Port == 224) {
+//      lora_recv_ex(LORA_EVENT_RECV_DATA, McpsIndication->Port, McpsIndication->Rssi, McpsIndication->Snr, McpsIndication->BufferSize, McpsIndication->Buffer);
+//    } else {
+//      if(McpsIndication->BufferSize) {
+//        lora_recv_ex(LORA_EVENT_RECV_DATA, McpsIndication->Port, McpsIndication->Rssi, McpsIndication->Snr, McpsIndication->BufferSize, McpsIndication->Buffer);
+//      }   
+//    }
   }
   return;
   

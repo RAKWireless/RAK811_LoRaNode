@@ -787,7 +787,7 @@ void lora_recv_ex(uint8_t event, uint8_t port, int16_t Rssi, int8_t snr, uint16_
 {
     char hex_str[3] = {0};
     
-    if (g_lora_system.recv_rssi_en) {   
+    if (g_lora_system.recv_rssi_en==0) {   
       e_printf("at+recv=%d,%d,%d", event, port, size);
     } else {
       e_printf("at+recv=%d,%d,%d,%d,%d", event, port, Rssi, snr, size);
