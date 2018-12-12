@@ -1,9 +1,4 @@
 # RAK811_LoRaNode
-**Update RAK811_LoRaNode firmware version to 2.x.3.2**<br>
-1.Fix a debug about "The Hard Fault exception occurs,Reset!".<br>
-2.The end number in version indicate the version with DEBUG or RELEASE :odd:DEBUG ,even:RELEASE.<br><br>
-**RAK811_LoRaNode firmware version 2.x.3.1**
-=======
 **update RAK811_LoRaNode firmware version to 2.x.3.2**<br>
 1.Fix a debug about "The Hard Fault exception occurs,Reset!".<br>
 2.The end number in version indicate the version with DEBUG or RELEASE :odd:DEBUG ,even:RELEASE.<br><br>
