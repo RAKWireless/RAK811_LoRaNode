@@ -678,7 +678,7 @@ static int handle_txpwr_level(lora_config_t *config, int argc, char *argv[], cha
         
         MibRequestConfirm_t mibReq;
   
-        mibReq.Type = MIB_CHANNELS_DEFAULT_TX_POWER;
+        mibReq.Type = MIB_CHANNELS_TX_POWER;
         mibReq.Param.ChannelsTxPower = power;
         if ( LORAMAC_STATUS_OK !=LoRaMacMibSetRequestConfirm( &mibReq )) {
            goto END;
