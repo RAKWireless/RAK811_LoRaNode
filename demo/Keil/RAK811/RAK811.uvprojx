@@ -48,7 +48,7 @@
             <InvalidFlash>1</InvalidFlash>
           </TargetStatus>
           <OutputDirectory>.\Objects\</OutputDirectory>
-          <OutputName>RAK811_LF</OutputName>
+          <OutputName>RAK811_HF</OutputName>
           <CreateExecutable>1</CreateExecutable>
           <CreateLib>0</CreateLib>
           <CreateHexFile>1</CreateHexFile>
@@ -330,7 +330,7 @@
             <vShortWch>1</vShortWch>
             <VariousControls>
               <MiscControls></MiscControls>
-              <Define></Define>
+              <Define>LORA_HF_BOARD</Define>
               <Undefine></Undefine>
               <IncludePath>..\..\..\src\application\RAK811;..\..\..\src\board\RAK811;..\..\..\src\board\RAK811\cmsis;..\..\..\src\external\JSON;..\..\..\src\external\utilities;..\..\..\src\hal\cmsis;..\..\..\src\hal\STM32L1xx_HAL_Driver\Inc;..\..\..\src\hal\STM32L1xx_HAL_Driver\Inc\Legacy;..\..\..\src\LoRaWAN\master\mac;..\..\..\src\LoRaWAN\master\mac\region;..\..\..\src\LoRaWAN\master\radio;..\..\..\src\LoRaWAN\master\radio\sx1276;..\..\..\src\LoRaWAN\master\system;..\..\..\src\LoRaWAN\master\system\crypto</IncludePath>
             </VariousControls>
