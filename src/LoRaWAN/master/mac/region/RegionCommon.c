@@ -23,6 +23,7 @@ Maintainer: Miguel Luis ( Semtech ), Gregory Cristian ( Semtech ) and Daniel Jae
 #include <stdint.h>
 #include <math.h>
 
+#include "board.h"
 #include "timer.h"
 #include "utilities.h"
 #include "LoRaMac.h"
@@ -30,10 +31,9 @@ Maintainer: Miguel Luis ( Semtech ), Gregory Cristian ( Semtech ) and Daniel Jae
 
 
 
-#define BACKOFF_DC_1_HOUR       100
-#define BACKOFF_DC_10_HOURS     1000
-#define BACKOFF_DC_24_HOURS     10000
-
+#define BACKOFF_DC_1_HOUR       10
+#define BACKOFF_DC_10_HOURS     100
+#define BACKOFF_DC_24_HOURS     1000
 
 
 static uint8_t CountChannels( uint16_t mask, uint8_t nbBits )
@@ -144,6 +144,7 @@ void RegionCommonChanMaskCopy( uint16_t* channelsMaskDest, uint16_t* channelsMas
         for( uint8_t i = 0; i < len; i++ )
         {
             channelsMaskDest[i] = channelsMaskSrc[i];
+//			e_printf("channelsMaskDest[%d]=0x%x\r\n",i,channelsMaskDest[i]);
         }
     }
 }
@@ -172,7 +173,9 @@ TimerTime_t RegionCommonUpdateBandTimeOff( bool joined, bool dutyCycle, Band_t* 
         {
             uint32_t txDoneTime =  MAX( TimerGetElapsedTime( bands[i].LastJoinTxDoneTime ),
                                         ( dutyCycle == true ) ? TimerGetElapsedTime( bands[i].LastTxDoneTime ) : 0 );
-
+#if DEBUG_FW_JOINEDTIMER 		
+	e_printf("dutyCycleEnabe=%d,Bands[%d].TimeOff=%d, txDoneTime=%d. LastJoinTxDoneTime=%d\r\n\r\n",dutyCycle,i,bands[i].TimeOff,txDoneTime,bands[i].LastJoinTxDoneTime);		
+#endif
             if( bands[i].TimeOff <= txDoneTime )
             {
                 bands[i].TimeOff = 0;
@@ -199,7 +202,7 @@ TimerTime_t RegionCommonUpdateBandTimeOff( bool joined, bool dutyCycle, Band_t* 
             else
             {
                 nextTxDelay = 0;
-                bands[i].TimeOff = 0;
+                bands[i].TimeOff = 0;   
             }
         }
     }
@@ -323,7 +326,7 @@ void RegionCommonCalcBackOff( RegionCommonCalcBackOffParams_t* calcBackOffParams
     uint8_t bandIdx = calcBackOffParams->Channels[calcBackOffParams->Channel].Band;
     uint16_t dutyCycle = calcBackOffParams->Bands[bandIdx].DCycle;
     uint16_t joinDutyCycle = 0;
-
+	
     // Reset time-off to initial value.
     calcBackOffParams->Bands[bandIdx].TimeOff = 0;
 
@@ -332,7 +335,7 @@ void RegionCommonCalcBackOff( RegionCommonCalcBackOffParams_t* calcBackOffParams
         // Get the join duty cycle
         joinDutyCycle = RegionCommonGetJoinDc( calcBackOffParams->ElapsedTime );
         // Apply the most restricting duty cycle
-        dutyCycle = MAX( dutyCycle, joinDutyCycle );
+        dutyCycle = joinDutyCycle;//MAX( dutyCycle, joinDutyCycle );
         // Reset the timeoff if the last frame was not a join request and when the duty cycle is not enabled
         if( ( calcBackOffParams->DutyCycleEnabled == false ) && ( calcBackOffParams->LastTxIsJoinRequest == false ) )
         {
@@ -346,17 +349,30 @@ void RegionCommonCalcBackOff( RegionCommonCalcBackOffParams_t* calcBackOffParams
         {
             // Apply band time-off.
             calcBackOffParams->Bands[bandIdx].TimeOff = calcBackOffParams->TxTimeOnAir * dutyCycle - calcBackOffParams->TxTimeOnAir;
+#if DEBUG_FW_JOINEDTIMER 		
+			e_printf("TxTimeOnAir=%d ,dutyCycle=%d\r\n",calcBackOffParams->TxTimeOnAir,dutyCycle);		
+#endif
         }
     }
     else
     {
+        // Get the join duty cycle
+        joinDutyCycle = RegionCommonGetJoinDc( calcBackOffParams->ElapsedTime );
+        // Apply the most restricting duty cycle
+        dutyCycle = joinDutyCycle;//MAX( dutyCycle, joinDutyCycle );
+
+		
         if( calcBackOffParams->DutyCycleEnabled == true )
         {
             calcBackOffParams->Bands[bandIdx].TimeOff = calcBackOffParams->TxTimeOnAir * dutyCycle - calcBackOffParams->TxTimeOnAir;
+#if DEBUG_FW_JOINEDTIMER 		
+			e_printf("TxTimeOnAir=%d ,dutyCycle=%d\r\n",calcBackOffParams->TxTimeOnAir,dutyCycle);		
+#endif			
         }
         else
         {
             calcBackOffParams->Bands[bandIdx].TimeOff = 0;
         }
     }
+
 }

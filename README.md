@@ -1,4 +1,6 @@
 # RAK811_LoRaNode
+**update RAK811_LoRaNode firmware version to 2.x.3.3**<br>
+Adjust duty cycle to improve the user experience.<br><br>
 **update RAK811_LoRaNode firmware version to 2.x.3.2**<br>
 1.Fix a debug about "The Hard Fault exception occurs,Reset!".<br>
 2.The end number in version indicate the version with DEBUG or RELEASE :odd:DEBUG ,even:RELEASE.<br><br>
