@@ -851,7 +851,7 @@
             <File>
               <FileName>ReleaseNotes.txt</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\src\board\RAK811\ReleaseNotes.txt</FilePath>
+              <FilePath>..\..\..\doc\AT Command\ReleaseNotes.txt</FilePath>
             </File>
           </Files>
         </Group>
@@ -1702,7 +1702,7 @@
             <File>
               <FileName>ReleaseNotes.txt</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\src\board\RAK811\ReleaseNotes.txt</FilePath>
+              <FilePath>..\..\..\doc\AT Command\ReleaseNotes.txt</FilePath>
             </File>
           </Files>
         </Group>

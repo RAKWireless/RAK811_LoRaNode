@@ -1,4 +1,8 @@
 # RAK811_LoRaNode
+
+**update RAK811_LoRaNode firmware version to 2.x.3.4**<br>
+Fit TTN and LoRaServer at region CN470 to connected quickly.<br><br>
+
 **update RAK811_LoRaNode firmware version to 2.x.3.3**<br>
 Adjust duty cycle to improve the user experience.<br><br>
 **update RAK811_LoRaNode firmware version to 2.x.3.2**<br>
